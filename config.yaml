@@ -1,0 +1,53 @@
+server:
+  host: "127.0.0.1"
+  port: 3456
+  log_level: "INFO"
+
+routing:
+  models:
+    haiku: "minimax"
+    sonnet: "minimax"
+    opus: "zai"
+  context_threshold: 165000
+  smart_switch:
+    enabled: true
+    target_models: ["sonnet", "opus"]
+    target_provider: "deepseek"
+
+providers:
+  minimax:
+    base_url: "https://api.minimax.io/anthropic"
+    model: "MiniMax-M2.7"
+    timeout: 180
+    context_limit: 200000
+
+  zai:
+    base_url: "https://api.z.ai/api/anthropic"
+    models:
+      haiku: "glm-4.7"
+      opus: "glm-5.1"
+    timeout: 180
+    context_limit: 200000
+
+  deepseek:
+    base_url: "https://api.deepseek.com/anthropic"
+    model: "deepseek-v4-pro"
+    timeout: 180
+    context_limit: 1000000
+
+  openrouter:
+    base_url: "https://openrouter.ai/api"
+    timeout: 180
+    context_limit: 200000
+
+failover:
+  enabled: true
+  fallback_provider: "openrouter"
+  circuit_breaker:
+    failure_threshold: 3
+    cooldown_minutes: 2
+
+status:
+  enabled: true
+  track_conversations: true
+  max_history: 100
