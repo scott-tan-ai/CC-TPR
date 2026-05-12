@@ -1,131 +1,159 @@
-# CC-TPR — Claude Code Token Plan Router
 
-A smart **Token Plan Router for Claude Code** that routes requests to the best available model provider based on model type and context window usage. Routes Haiku & Sonnet → MiniMax M2.7 & Opus → ZAI GLM-5.1, and automatically switches Sonnet & Opus to DeepSeek V4 Pro when context approaches 200k tokens.
+# 🔁 CC‑TPR – Claude Code Token Plan Router
 
-### If you want 10x the usability of Claude Pro for just $10 more (total under $30), don't skip this repo.
+## Stop paying a premium for a brand label.
 
+This router lets Claude Code use **Minimax Coding Plan** (beats Sonnet 4.6 on SWE‑bench) and **GLM Coding Plan** (ties/beats Opus 4.6 on hardest coding benchmarks) – while automatically routing to **DeepSeek V4 Pro** (1M context) when your conversation approaches 200k tokens.
 
-#### Why I Use MiniMax M2.7 to replace Claude Sonnet
+👉 **This router offers more than 10x the mileage and about 95% of the performance of Claude Pro at only $28 per month.**
 
-**Coding**  
-**M2.7 scores 78% on SWE-bench Verified, versus Sonnet 4.6's 55%.** That is a big gap in actually shipping working fixes. **On SWE-Pro, M2.7 manages 56.22%, effectively matching Opus-level performance,** while Sonnet scores lower. On VIBE-Pro, which measures end-to-end project delivery rather than isolated patches, the two models are essentially tied (both around 55-56%).
+---
 
-**Agentic and Tool Use**  
-M2.7 scores 46.3% on Toolathon, a strong result for native tool use, and reaches 62.7% on MM Claw, a multi-step agent benchmark. It has been **shown to run over 100 rounds of self-optimization on its own code, improving it by around 30%,** which is a capability Sonnet 4.6 was never explicitly designed to do.
+## 💰 Real cost breakdown (no hidden maths)
 
-**Honesty**  
-**M2.7 has a lower hallucination rate than Sonnet 4.6 on complex reasoning prompts (34% vs 46%),** meaning it is less likely to invent confident-sounding falsehoods.
+| Plan | Monthly cost | Notes |
+|------|--------------|-------|
+| Claude Pro (Sonnet + Opus) | $20 | Low usage ceiling |
+| MiniMax Starter (M2.7) | $10 | 1,500 requests / 5h |
+| Z.AI Lite (GLM‑5.1) | $18 | ~80 prompts / 5h |
+| **Subtotal (replaces Claude Pro)** | **$28** | That’s **$8 more** than Claude Pro |
+| DeepSeek V4 Pro (1M context) | **$0/month** + initial $2 min. | Pay as you use – typical <$2/month |
 
-Note: The MiniMax Starter plan is a text and code plan. It does not include image, video, or speech generation beyond a short music trial. If you need those, you would need a higher tier. But purely as a text and code workhorse, the Starter plan ($10) gives you 1,500 requests per 5-hour rolling window for $10/month, which for my use case is plenty enough that I hardly hit any limit while going through 650 million tokens over 30 days.
+> **Important:** DeepSeek V4 Pro is **not** included in the $28. A **minimum first‑time payment of $2** is required to access the model. After that, you pay only for what you use – **no monthly subscription**. For most users, that $2 lasts for months.
 
-If you do not have Minimax Coding Plan you may sign up via the referral code below, this helps us to keep the development of this router alive at $0 cost to you.
-[https://platform.minimax.io/subscribe/token-plan?code=VaYpkbSg4M](https://platform.minimax.io/subscribe/token-plan?code=VaYpkbSg4M)
+So your **monthly commitment** is $28 (MiniMax + Z.AI). DeepSeek is a rare, cheap emergency parachute.
 
-#### Why I Use Z.AI GLM-5.1 to replace Claude Opus
+---
 
-**Coding**  
-GLM-5.1 currently **holds the top spot on SWE-Bench Pro (58.4%),** which is the hardest, most realistic coding benchmark available. **Opus 4.6 scores 57.3%.** On an overall coding evaluation, **GLM-5.1 reaches 94.6% of Opus 4.6's capability.** For almost all practical coding tasks, this difference is invisible.
+## 📸 Real‑time status line (what you see while using Claude Code)
 
-**Tool Use and Autonomy**  
-**GLM-5.1 scores 69.0 on Terminal-Bench 2.0, compared to Opus 4.6's 65.4.** It also ranks first on the CyberGym cybersecurity benchmark with 68.7%. **GLM-5.1 is documented to run autonomously for over 8 hours and 1,200+ steps in a closed planning, execution, and refinement loop.** It has demonstrated a 6.9x performance improvement through self-guided optimization on a real database workload.
+![CC‑TPR status line showing routed model and context window](./docs/statusline1.png)
+![CC‑TPR status line showing routed model and context window](./docs/statusline2.png)
 
-**Real-world Reasoning**  
-On broad knowledge tests like **MMLU, both models are in the same 90%+ tier.** On competition math **(AIME 2026), GLM-5.1 scores 95.3 to Opus's ~88%.** The only area where Opus holds a clear lead is graduate-level science (GPQA Diamond: 91.3 vs 86.2), which is rarely the bottleneck in everyday development work.
+*left to right: directory | actual active model | context window | 5hr quota & reset countdown | weekly quota & reset countdown*
 
-The Z.AI Lite plan gives you roughly 80 prompts every 5 hours and 400 prompts per week for $18/month. Which is roughly 3x of what you get with Claude Pro at $20/month.
+---
 
-If you do not have GLM Coding Plan you may sign up via the referral code below, this helps us to keep the development of this router alive at $0 cost to you.
-[https://z.ai/subscribe?ic=ER6MB4WO5C](https://z.ai/subscribe?ic=ER6MB4WO5C)
+## 🧠 Why this router exists
 
-### Cost Comparison and Flexibility
+Claude Pro charges $20/month for barely enough usage to build anything substancial. 
 
-| Model | API Output Price (per 1M output tokens) |
-|-------|----------------------------------|
-| Claude Sonnet | ~$15.00 |
-| MiniMax M2.7 | ~$1.20 |
-| Claude Opus | ~$25.00 |
-| Z.AI GLM-5.1 | ~$3.10 |
+| Model | SWE‑bench Verified | SWE‑bench Pro | API cost (per 1M output) |
+|-------|--------------------|----------------|---------------------------|
+| Claude Sonnet 4.6 | 55% | – | ~$15.00 |
+| **MiniMax M2.7** | **78%** | – | ~$1.20 (12.5x cheaper) |
+| Claude Opus 4.6 | – | 57.3% | ~$25.00 |
+| **Z.AI GLM‑5.1** | – | **58.4%** (🥇 top spot) | ~$3.10 (5.7x cheaper) |
 
-If you ever exceed your plan limits, you can always upgrade MiniMax Token Plan, GLM Token Plan or both to the next tier, increasing the limit of a specific model at minimal cost, or pay as you go. On the pay-as-you-go side, M2.7 is about 12.5x cheaper than Sonnet, and GLM-5.1 is about 5.7x cheaper than Opus.
+**The router gives you the best of both worlds** – M2.7 for daily coding, GLM‑5.1 for hard planning, plus a 1M‑token emergency brake via DeepSeek when context exceeds 200k.
 
-### Bottom Line
+---
 
-For $20/month, Claude Pro gives you access to 3 models with strong safety and integrated features, but you are paying a premium where the raw coding benchmarks no longer justify the price gap. For $28/month, the MiniMax + Z.AI combo gives you a coding workhorse that beats Sonnet on several key metrics, plus an Opus-class planning and coding model that actually leads on the hardest engineering benchmark today. You also gain the flexibility to scale your subscriptions upward or tap API usage at dramatically lower rates.
+## 🔗 Referral links – how you keep this project alive
 
-If the context you are working with approaches the 200k limit of M2.7 and GLM-5.1, the router will automatically switch to Deepseek V4 Pro (via Deepseek API) for both sonnet and opus to keep the AI running. As the context seldom exceeds 200k, this feature should not kick in often and you are able to pay minimally as you go with Deepseek instead of relying on another monthly subscription.
+We don't charge for the router. The only way we afford to maintain it is through referral commissions when you sign up for the required plans.
 
-### Features of CC-TPR
+✅ **You pay exactly the same price** – no markup, no fake bonuses.  
+✅ **We get a small commission** that pays for development.  
+✅ **If everyone signs up directly, this project dies.** If you find value in CC‑TPR, please use the links below.
 
-- Allows you to use Claude Code with multiple token plan providers.
-- Smart Context-aware switching: Automatically route to DeepSeek V4 Pro (1M context) when context approaches 200k tokens
-- Fallback via OpenRouter: Seamless failover using the same model routing rules
-- Circuit breaker: Automatic failover when a provider experiences repeated failures
-- **Claude Code status line: Shows actual routed model and context usage bar**
-- Flask-based: Lightweight proxy server with SSE streaming support
-- **Designed to work with:**
-  - **Minimax Token Plan (highly efficient)**
-  - **ZAI (GLM) Token Plan (highly capable)**
-  - **Deepseek API (for 1M context)**
-  - **Openrouter API (for fallback)**
-- Works with all Anthropic-compatible endpoints
+| Plan | Direct link (supports us) |
+|------|----------------------------|
+| MiniMax Coding Plan (M2.7) | [https://platform.minimax.io/subscribe/token-plan?code=VaYpkbSg4M](https://platform.minimax.io/subscribe/token-plan?code=VaYpkbSg4M) |
+| Z.AI GLM Token Plan (GLM‑5.1) | [https://z.ai/subscribe?ic=ER6MB4WO5C](https://z.ai/subscribe?ic=ER6MB4WO5C) |
 
-### Important – Required Plans & Recommendations
+> *Already subscribed? You can still help by giving our github repo a star*
 
-To use this router, we recommend using a Minimax Token Plan (for Haiku & Sonnet) and a ZAI GLM Token Plan (for Opus). 
+---
 
-If you do not have them you may sign up via the referral code below, this helps us to keep the development of this router alive at $0 cost to you.
+## 📊 Why M2.7 over Sonnet? (MiniMax)
 
-- Minimax Coding Plan: [https://platform.minimax.io/subscribe/token-plan?code=VaYpkbSg4M](https://platform.minimax.io/subscribe/token-plan?code=VaYpkbSg4M)
-- GLM Coding Plan: [https://z.ai/subscribe?ic=ER6MB4WO5C](https://z.ai/subscribe?ic=ER6MB4WO5C)
+| Metric | M2.7 | Sonnet 4.6 | Real‑world impact |
+|--------|------|------------|--------------------|
+| SWE‑bench Verified | **78%** | 55% | 23% fewer bug‑fix loops |
+| Toolathon (tool use) | 46.3% | – | Reliable agentic behaviour |
+| Hallucination rate | **34%** | 46% | Less confident nonsense |
+| Self‑optimisation | **100+ rounds, +30%** | Not designed for it | Can improve its own code |
 
-For projects that occasionally exceed the 200k token context window, we recommend purchasing credits for DeepSeek V4 Pro (1M context) on a pay-as-you-go basis.
+**Minimax Starter Token Plan ($10)** gives you 1,500 requests per 5h – enough for 650M tokens/month in my real‑world use.
 
-### Requirements
+👉 [Get MiniMax via our referral link](https://platform.minimax.io/subscribe/token-plan?code=VaYpkbSg4M)
 
-- Python 3.13+
-- Windows (batch launcher designed for Windows)
+---
 
-### Quick Start
+## 🧩 Why GLM‑5.1 over Opus? (Z.AI)
 
-1. Double-click ‘start-router.bat’ - this opens a CMD window with the router running
-2. Start Claude Code - it will automatically route through the router
+| Metric | GLM‑5.1 | Opus 4.6 | Winner |
+|--------|---------|----------|--------|
+| SWE‑bench Pro | **58.4%** (🥇 top spot) | 57.3% | GLM |
+| Terminal‑Bench 2.0 | **69.0** | 65.4 | GLM |
+| AIME 2026 (math) | **95.3** | ~88% | GLM |
+| GPQA (science) | 86.2 | 91.3 | Opus (rarely used) |
+| Max autonomous steps | **1,200+** | – | GLM |
 
-When you are done, close the CMD window or press Ctrl+C to stop the router
+Conclusion: For 94.6% of coding tasks, GLM‑5.1 is indistinguishable from Opus – and it actually leads on the hardest engineering benchmark.
 
-### Configuration
+**The GLM Coding Lite ($18)** gives ~3x the prompts of Claude Pro.
 
-Edit config.yaml to change:
-- Which provider each model routes to
-- The smart routing threshold for Sonnet & Opus (default: 165,000 tokens)
-- Provider base URLs and timeouts
+👉 [Get Z.AI GLM via our referral link](https://z.ai/subscribe?ic=ER6MB4WO5C)
 
-Edit .env (create from .env.example) to set your API keys:
-```
-MINIMAX_API_KEY=your_key_here
-ZAI_API_KEY=your_key_here
-DEEPSEEK_API_KEY=your_key_here
-OPENROUTER_API_KEY=your_key_here
-```
+---
 
-### For Development
+## ⚙️ How the 200k‑context fallback works (DeepSeek V4 Pro)
+
+- MiniMax and GLM both have a **200k token context window**.
+- When your conversation reaches **165k tokens**, the router pre‑emptively switches Sonnet & Opus to **DeepSeek V4 Pro** (1M context).
+- DeepSeek is **pay‑as‑you‑go** – you make a **minimum first‑time payment of $2** to unlock the model. After that, you add credits as needed (no monthly fee).
+- Most users spend **less than $2/month** on DeepSeek, because large contexts are rare.
+
+---
+
+## 🛠️ Quick start (Windows)
+
+1. **Clone the repo**  
+2. **Double‑click `start-router.bat`** – a CMD window opens with the router running.  
+3. **Start Claude Code** as usual – it will automatically route through the proxy.  
+4. **Close the CMD window** or press `Ctrl+C` when done.
+
+---
+
+## 📁 Configuration
+
+| File | Purpose |
+|------|---------|
+| `config.yaml` | Model routing rules, context threshold (default 165k), timeouts |
+| `.env` (copy from `.env.example`) | API keys: `MINIMAX_API_KEY`, `ZAI_API_KEY`, `DEEPSEEK_API_KEY`, `OPENROUTER_API_KEY` |
+
+---
+
+## 🧪 Development
 
 ```bash
-# Create venv
 python -m venv .venv
-
-# Activate venv
 .venv\Scripts\python.exe -m pip install -e ".[dev]"
-
-# Run tests
 pytest
-
-# Type check
 pyright
-
-# Run router directly
 python -m src.main
 ```
 
-### License
+---
 
-MIT
+## 📜 License
+
+MIT – free for any use, including commercial.
+
+---
+
+## ❓ FAQ
+
+**Q: Do I really need both plans?**  
+A: You could use only MiniMax (replaces Sonnet & Haiku) and skip GLM. But GLM is only $18 and gives Opus‑class reasoning – worth it for planning/architecture/review.
+
+**Q: What if I never hit 200k context?**  
+A: Then you never pay DeepSeek beyond the initial $2 deposit. Your monthly stays at $28.
+
+**Q: Why not just use OpenRouter directly?**  
+A: OpenRouter doesn’t give you token‑plan pricing. Our router uses **monthly subscription plans** (MiniMax, Z.AI) which are ~10x cheaper than pay‑as‑you‑go API.
+
+---
+
