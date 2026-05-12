@@ -2,10 +2,10 @@
 
 A smart **Token Plan Router for Claude Code** that routes requests to the best available model provider based on model type and context window usage. Routes Haiku & Sonnet → MiniMax M2.7 & Opus → ZAI GLM-5.1, and automatically switches Sonnet & Opus to DeepSeek V4 Pro when context approaches 200k tokens.
 
-## IF you want more than 500% use compared to Claude Pro and pay only 50% more (Under $30), Do Not Skip This Repo.
+### If you want 10x the usability of Claude Pro for just $10 more (total under $30), don't skip this repo.
 
 
-### Why I Use MiniMax M2.7 to replace Claude Sonnet
+#### Why I Use MiniMax M2.7 to replace Claude Sonnet
 
 **Coding**  
 **M2.7 scores 78% on SWE-bench Verified, versus Sonnet 4.6's 55%.** That is a big gap in actually shipping working fixes. **On SWE-Pro, M2.7 manages 56.22%, effectively matching Opus-level performance,** while Sonnet scores lower. On VIBE-Pro, which measures end-to-end project delivery rather than isolated patches, the two models are essentially tied (both around 55-56%).
