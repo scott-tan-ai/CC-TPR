@@ -1,20 +1,16 @@
-# Runner operating system
-runs-on: windows-latest
+name: CI
 
-# Trigger on push to main and all PR branches
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
 
-# Cancel in-progress runs when a new run is triggered
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  # Run tests on every push/PR
   test:
     runs-on: windows-latest
     steps:
@@ -41,7 +37,6 @@ jobs:
           files: coverage.xml
           fail_ci_if_error: false
 
-  # Type check on every push/PR
   typecheck:
     runs-on: windows-latest
     steps:
@@ -62,7 +57,6 @@ jobs:
       - name: Run pyright
         run: pyright
 
-  # Lint on every push/PR
   lint:
     runs-on: windows-latest
     steps:
@@ -86,7 +80,6 @@ jobs:
       - name: Run ruff format check
         run: ruff format --check src tests
 
-  # Build package on tag push
   build:
     runs-on: windows-latest
     needs: [test, typecheck, lint]
