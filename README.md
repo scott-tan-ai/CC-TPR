@@ -18,6 +18,9 @@ M2.7 scores 46.3% on Toolathon, a strong result for native tool use, and reaches
 
 Note: The MiniMax Starter plan is a text and code plan. It does not include image, video, or speech generation beyond a short music trial. If you need those, you would need a higher tier. But purely as a text and code workhorse, the Starter plan ($10) gives you 1,500 requests per 5-hour rolling window for $10/month, which for my use case is plenty enough that I hardly hit any limit while going through 650 million tokens over 30 days.
 
+If you do not have Minimax Coding Plan you may sign up via the referral code below, this helps us to keep the development of this router alive at $0 cost to you.
+[https://platform.minimax.io/subscribe/token-plan?code=VaYpkbSg4M](https://platform.minimax.io/subscribe/token-plan?code=VaYpkbSg4M)
+
 #### Why I Use Z.AI GLM-5.1 to replace Claude Opus
 
 **Coding**  
@@ -30,6 +33,9 @@ GLM-5.1 currently **holds the top spot on SWE-Bench Pro (58.4%),** which is the 
 On broad knowledge tests like **MMLU, both models are in the same 90%+ tier.** On competition math **(AIME 2026), GLM-5.1 scores 95.3 to Opus's ~88%.** The only area where Opus holds a clear lead is graduate-level science (GPQA Diamond: 91.3 vs 86.2), which is rarely the bottleneck in everyday development work.
 
 The Z.AI Lite plan gives you roughly 80 prompts every 5 hours and 400 prompts per week for $18/month. Which is roughly 3x of what you get with Claude Pro at $20/month.
+
+If you do not have GLM Coding Plan you may sign up via the referral code below, this helps us to keep the development of this router alive at $0 cost to you.
+[https://z.ai/subscribe?ic=ER6MB4WO5C](https://z.ai/subscribe?ic=ER6MB4WO5C)
 
 ### Cost Comparison and Flexibility
 
