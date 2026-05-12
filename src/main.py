@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from flask import Flask, Response, jsonify, request
 
+from .quota import get_quota
 from .router import circuit_breaker, config, handle_message, logger
 from .status import tracker
 
@@ -77,6 +78,12 @@ def status():
     snap = tracker.snapshot()
     snap["circuit_breaker"] = circuit_breaker.status()
     return jsonify(snap)
+
+
+@app.route("/quota", methods=["GET"])
+def quota():
+    """Quota endpoint with MiniMax and ZAI usage data."""
+    return jsonify(get_quota())
 
 
 def run_server() -> None:

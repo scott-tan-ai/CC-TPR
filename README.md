@@ -1,202 +1,124 @@
 # CC-TPR — Claude Code Token Plan Router
 
-Stop burning through your Claude Pro context window. CC-TPR routes your Claude Code requests across MiniMax M2.7, ZAI GLM-4.7/5.1, and DeepSeek V4 Pro — giving you **3x the usable context** of Claude Pro for only ~$30/month.
+A smart **Token Plan Router for Claude Code** that routes requests to the best available model provider based on model type and context window usage. Routes Haiku & Sonnet → MiniMax M2.7 & Opus → ZAI GLM-5.1, and automatically switches Sonnet & Opus to DeepSeek V4 Pro when context approaches 200k tokens.
 
-## The Math
+# IF you want more than 500% use compared to Claude Pro and pay only 50% more (Under $30), Do Not Skip This Repo.
 
-| Setup | Cost/mo | Context Window | Who it's for |
-|-------|---------|---------------|-------------|
-| **Claude Pro** | $20 | 200k tokens | Everyone |
-| **CC-TPR** | ~$30 | 200k → **1M tokens** | Power users |
 
-**CC-TPR costs $10 more but gives you 5x the context window.** When your project exceeds 200k tokens, CC-TPR automatically switches to DeepSeek V4 Pro with a **1,000,000 token context window** — no code changes, no interruptions.
+### Why I Use MiniMax M2.7 to replace Claude Sonnet
 
----
+**Coding**  
+**M2.7 scores 78% on SWE-bench Verified, versus Sonnet 4.6's 55%.** That is a big gap in actually shipping working fixes. **On SWE-Pro, M2.7 manages 56.22%, effectively matching Opus-level performance,** while Sonnet scores lower. On VIBE-Pro, which measures end-to-end project delivery rather than isolated patches, the two models are essentially tied (both around 55-56%).
 
-## How It Works
+**Agentic and Tool Use**  
+M2.7 scores 46.3% on Toolathon, a strong result for native tool use, and reaches 62.7% on MM Claw, a multi-step agent benchmark. It has been **shown to run over 100 rounds of self-optimization on its own code, improving it by around 30%,** which is a capability Sonnet 4.6 was never explicitly designed to do.
 
-```
-You: "haiku/sonnet" → CC-TPR → MiniMax M2.7 ($10/mo, 200k context)
-You: "opus"         → CC-TPR → ZAI GLM-5.1 ($18/mo, 200k context)
-You: (>165k tokens) → CC-TPR → DeepSeek V4 Pro ($2/mo, 1M context!)
-```
+**Honesty**  
+**M2.7 has a lower hallucination rate than Sonnet 4.6 on complex reasoning prompts (34% vs 46%),** meaning it is less likely to invent confident-sounding falsehoods.
 
-### Smart Switch
-When any single request exceeds **165,000 tokens**, CC-TPR automatically routes that request to **DeepSeek V4 Pro** — the only model with a 1M token context window at ~$2/month. Your conversation continues seamlessly. Once triggered, it stays on DeepSeek for that session.
+Note: The MiniMax Starter plan is a text and code plan. It does not include image, video, or speech generation beyond a short music trial. If you need those, you would need a higher tier. But purely as a text and code workhorse, the Starter plan ($10) gives you 1,500 requests per 5-hour rolling window for $10/month, which for my use case is plenty enough that I hardly hit any limit while going through 650 million tokens over 30 days.
 
-### Circuit Breaker
-If a provider goes down, CC-TPR fails over to OpenRouter automatically — you don't lose your session.
+### Why I Use Z.AI GLM-5.1 to replace Claude Opus
 
-### Status Line
-Claude Code's status bar shows the **actual model you're using** (not just "claude-sonnet"), plus a context usage percentage bar so you know when you're about to hit the limit.
+**Coding**  
+GLM-5.1 currently **holds the top spot on SWE-Bench Pro (58.4%),** which is the hardest, most realistic coding benchmark available. **Opus 4.6 scores 57.3%.** On an overall coding evaluation, **GLM-5.1 reaches 94.6% of Opus 4.6's capability.** For almost all practical coding tasks, this difference is invisible.
 
----
+**Tool Use and Autonomy**  
+**GLM-5.1 scores 69.0 on Terminal-Bench 2.0, compared to Opus 4.6's 65.4.** It also ranks first on the CyberGym cybersecurity benchmark with 68.7%. **GLM-5.1 is documented to run autonomously for over 8 hours and 1,200+ steps in a closed planning, execution, and refinement loop.** It has demonstrated a 6.9x performance improvement through self-guided optimization on a real database workload.
 
-## What You Get
+**Real-world Reasoning**  
+On broad knowledge tests like **MMLU, both models are in the same 90%+ tier.** On competition math **(AIME 2026), GLM-5.1 scores 95.3 to Opus's ~88%.** The only area where Opus holds a clear lead is graduate-level science (GPQA Diamond: 91.3 vs 86.2), which is rarely the bottleneck in everyday development work.
 
-- **haiku → MiniMax M2.7** — fast, cheap light tasks
-- **sonnet → MiniMax M2.7** — same model, covers most daily coding
-- **opus → ZAI GLM-5.1** — complex reasoning on ZAI's GLM-5.1
-- **>165k tokens → DeepSeek V4 Pro** — 1M context for large codebases, long sessions
-- **Automatic failover** — circuit breaker prevents session loss when a provider is down
-- **Claude Code status line** — see exactly which model is active and your context %
-- **Config-driven** — change any routing rule in `config.yaml`, no code changes
+The Z.AI Lite plan gives you roughly 80 prompts every 5 hours and 400 prompts per week for $18/month. Which is roughly 3x of what you get with Claude Pro at $20/month.
 
----
+## Cost Comparison and Flexibility
 
-## Subscription Setup (~$30/month)
+| Model | API Output Price (per 1M output tokens) |
+|-------|----------------------------------|
+| Claude Sonnet | ~$15.00 |
+| MiniMax M2.7 | ~$1.20 |
+| Claude Opus | ~$25.00 |
+| Z.AI GLM-5.1 | ~$3.10 |
 
-### 1. MiniMax — $10/month
-Sign up at [minimax.io](https://www.minimax.io), subscribe to M2.7 plan.
-- API base: `https://api.minimax.io/anthropic`
-- Model: `MiniMax-M2.7`
-- Context: 200,000 tokens
+If you ever exceed your plan limits, you can always upgrade MiniMax Token Plan, GLM Token Plan or both to the next tier, increasing the limit of a specific model at minimal cost, or pay as you go. On the pay-as-you-go side, M2.7 is about 12.5x cheaper than Sonnet, and GLM-5.1 is about 5.7x cheaper than Opus.
 
-### 2. ZAI — $18/month
-Sign up at [z.ai](https://z.ai), subscribe to GLM plan.
-- API base: `https://api.z.ai/api/anthropic`
-- Models: `glm-4.7` (haiku/opus routing), `glm-5.1` (opus)
-- Context: 200,000 tokens
+## Bottom Line
 
-### 3. DeepSeek V4 Pro — ~$2/month
-Sign up at [deepseek.com](https://deepseek.com), add credit.
-- API base: `https://api.deepseek.com/anthropic`
-- Model: `deepseek-v4-pro`
-- Context: **1,000,000 tokens**
+For $20/month, Claude Pro gives you access to 3 models with strong safety and integrated features, but you are paying a premium where the raw coding benchmarks no longer justify the price gap. For $28/month, the MiniMax + Z.AI combo gives you a coding workhorse that beats Sonnet on several key metrics, plus an Opus-class planning and coding model that actually leads on the hardest engineering benchmark today. You also gain the flexibility to scale your subscriptions upward or tap API usage at dramatically lower rates.
 
-DeepSeek is used **only when a single request exceeds 165k tokens**. At typical usage, cost is minimal — ~$2-5/month.
+If the context you are working with approaches the 200k limit of M2.7 and GLM-5.1, the router will automatically switch to Deepseek V4 Pro (via Deepseek API) for both sonnet and opus to keep the AI running. As the context seldom exceeds 200k, this feature should not kick in often and you are able to pay minimally as you go with Deepseek instead of relying on another monthly subscription.
 
-### 4. OpenRouter — pay-as-you-go (fallback only)
-Sign up at [openrouter.ai](https://openrouter.ai) — only charged when a primary provider fails. Usually $0/month.
+## Features of CC-TPR
 
----
+- Allows you to use Claude Code with multiple token plan providers.
+- Smart Context-aware switching: Automatically route to DeepSeek V4 Pro (1M context) when context approaches 200k tokens
+- Fallback via OpenRouter: Seamless failover using the same model routing rules
+- Circuit breaker: Automatic failover when a provider experiences repeated failures
+- **Claude Code status line: Shows actual routed model and context usage bar**
+- Flask-based: Lightweight proxy server with SSE streaming support
+- **Designed to work with:**
+  - **Minimax Token Plan (highly efficient)**
+  - **ZAI (GLM) Token Plan (highly capable)**
+  - **Deepseek API (for 1M context)**
+  - **Openrouter API (for fallback)**
+- Works with all Anthropic-compatible endpoints
+
+## Important – Required Plans & Recommendations
+
+To use this router, we recommend using a Minimax Token Plan (for Haiku & Sonnet) and a ZAI GLM Token Plan (for Opus). 
+
+If you do not have them you may sign up via the referral code below, this helps us to keep the development of this router alive at $0 cost to you.
+
+- Minimax Coding Plan: [https://platform.minimax.io/subscribe/token-plan?code=VaYpkbSg4M](https://platform.minimax.io/subscribe/token-plan?code=VaYpkbSg4M)
+- GLM Coding Plan: [https://z.ai/subscribe?ic=ER6MB4WO5C](https://z.ai/subscribe?ic=ER6MB4WO5C)
+
+For projects that occasionally exceed the 200k token context window, we recommend purchasing credits for DeepSeek V4 Pro (1M context) on a pay-as-you-go basis.
+
+## Requirements
+
+- Python 3.13+
+- Windows (batch launcher designed for Windows)
 
 ## Quick Start
 
-### One-Time Setup
+1. Double-click ‘start-router.bat’ - this opens a CMD window with the router running
+2. Start Claude Code - it will automatically route through the router
 
-```bash
-# Clone or navigate to CC-TPR
-cd CC-TPR
-
-# Create virtual environment
-python -m venv .venv
-
-# Install dependencies
-.venv\Scripts\python.exe -m pip install -e ".[dev]"
-
-# Create .env file
-copy .env.example .env
-```
-
-Edit `.env` and fill in your API keys:
-```
-MINIMAX_API_KEY=your_minimax_key
-ZAI_API_KEY=your_zai_key
-DEEPSEEK_API_KEY=your_deepseek_key
-OPENROUTER_API_KEY=your_openrouter_key
-```
-
-### Daily Use
-
-**Double-click `start-router.bat`** — a CMD window opens with the router running.
-
-Start Claude Code. All requests route automatically through CC-TPR.
-
-Press Ctrl+C or close the CMD window to stop.
-
----
-
-## Routing Table
-
-| Claude Code Model | Provider | Actual Model | Context Window | Monthly Cost |
-|-------------------|----------|--------------|---------------|--------------|
-| haiku | MiniMax | M2.7 | 200k | $10 |
-| sonnet | MiniMax | M2.7 | 200k | $10 |
-| opus | ZAI | GLM-5.1 | 200k | $18 |
-| sonnet/opus (>165k tokens) | DeepSeek | V4 Pro | **1M** | ~$2 |
-
-**Note:** haiku and sonnet both route to the same MiniMax M2.7 model — both Claude Code tiers get equivalent power through CC-TPR. opus goes to ZAI GLM-5.1 for heavier workloads.
-
----
+When you are done, close the CMD window or press Ctrl+C to stop the router
 
 ## Configuration
 
-All routing is config-driven in `config.yaml`:
+Edit config.yaml to change:
+- Which provider each model routes to
+- The smart routing threshold for Sonnet & Opus (default: 165,000 tokens)
+- Provider base URLs and timeouts
 
-```yaml
-routing:
-  models:
-    haiku: "minimax"    # haiku → MiniMax M2.7
-    sonnet: "minimax"   # sonnet → MiniMax M2.7
-    opus: "zai"          # opus → ZAI GLM-5.1
-  context_threshold: 165000   # trigger DeepSeek switch at this token count
-  smart_switch:
-    enabled: true
-    target_models: ["sonnet", "opus"]  # which models trigger the switch
-    target_provider: "deepseek"        # route to DeepSeek V4 Pro
+Edit .env (create from .env.example) to set your API keys:
+```
+MINIMAX_API_KEY=your_key_here
+ZAI_API_KEY=your_key_here
+DEEPSEEK_API_KEY=your_key_here
+OPENROUTER_API_KEY=your_key_here
 ```
 
-Change `context_threshold` to trigger the DeepSeek switch earlier or later.
-
----
-
-## Project Structure
-
-```
-CC-TPR/
-├── src/
-│   ├── main.py              # Flask app — /v1/messages proxy, /health, /status
-│   ├── router.py            # Routing logic + smart switch
-│   ├── failover.py          # Circuit breaker (auto-resets after 2min cooldown)
-│   ├── tokenizer.py         # cl100k_base token counting
-│   ├── status.py            # StatusTracker singleton (thread-safe)
-│   ├── providers/           # Provider implementations
-│   │   ├── minimax.py       # MiniMax M2.7
-│   │   ├── zai.py           # ZAI GLM-4.7 / GLM-5.1
-│   │   ├── deepseek.py      # DeepSeek V4 Pro (1M context)
-│   │   └── openrouter.py    # Fallback only
-│   ├── converters/          # Format converters (kept for reference)
-│   └── utils/
-│       ├── config.py        # YAML config loader
-│       └── logger.py        # Logging setup
-├── tests/                   # 28 unit tests
-├── config.yaml              # Routing configuration
-├── .env.example             # API keys template
-├── start-router.bat         # Double-click launcher
-├── stop-router.bat         # Stop router
-└── README.md
-```
-
----
-
-## For Developers
+## For Development
 
 ```bash
+# Create venv
+python -m venv .venv
+
+# Activate venv
+.venv\Scripts\python.exe -m pip install -e ".[dev]"
+
 # Run tests
 pytest
 
 # Type check
 pyright
 
-# Lint
-ruff check src tests
-
-# Build package
-python -m build
+# Run router directly
+python -m src.main
 ```
-
----
-
-## Why This Beats Claude Pro Alone
-
-1. **5x context window** — 200k vs 1M tokens. Work on entire codebases without hitting walls.
-2. **Cheaper per-token** — MiniMax M2.7 and ZAI GLM models cost far less per token than Claude.
-3. **No interruptions** — automatic failover means no lost sessions when a provider has issues.
-4. **Transparent** — status line shows exactly what model is running and your context %.
-5. **Config-driven** — retune routing without touching code.
-
----
 
 ## License
 
