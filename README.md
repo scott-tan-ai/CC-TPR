@@ -18,7 +18,7 @@ M2.7 scores 46.3% on Toolathon, a strong result for native tool use, and reaches
 
 Note: The MiniMax Starter plan is a text and code plan. It does not include image, video, or speech generation beyond a short music trial. If you need those, you would need a higher tier. But purely as a text and code workhorse, the Starter plan ($10) gives you 1,500 requests per 5-hour rolling window for $10/month, which for my use case is plenty enough that I hardly hit any limit while going through 650 million tokens over 30 days.
 
-### Why I Use Z.AI GLM-5.1 to replace Claude Opus
+#### Why I Use Z.AI GLM-5.1 to replace Claude Opus
 
 **Coding**  
 GLM-5.1 currently **holds the top spot on SWE-Bench Pro (58.4%),** which is the hardest, most realistic coding benchmark available. **Opus 4.6 scores 57.3%.** On an overall coding evaluation, **GLM-5.1 reaches 94.6% of Opus 4.6's capability.** For almost all practical coding tasks, this difference is invisible.
@@ -31,7 +31,7 @@ On broad knowledge tests like **MMLU, both models are in the same 90%+ tier.** O
 
 The Z.AI Lite plan gives you roughly 80 prompts every 5 hours and 400 prompts per week for $18/month. Which is roughly 3x of what you get with Claude Pro at $20/month.
 
-## Cost Comparison and Flexibility
+### Cost Comparison and Flexibility
 
 | Model | API Output Price (per 1M output tokens) |
 |-------|----------------------------------|
@@ -42,13 +42,13 @@ The Z.AI Lite plan gives you roughly 80 prompts every 5 hours and 400 prompts pe
 
 If you ever exceed your plan limits, you can always upgrade MiniMax Token Plan, GLM Token Plan or both to the next tier, increasing the limit of a specific model at minimal cost, or pay as you go. On the pay-as-you-go side, M2.7 is about 12.5x cheaper than Sonnet, and GLM-5.1 is about 5.7x cheaper than Opus.
 
-## Bottom Line
+### Bottom Line
 
 For $20/month, Claude Pro gives you access to 3 models with strong safety and integrated features, but you are paying a premium where the raw coding benchmarks no longer justify the price gap. For $28/month, the MiniMax + Z.AI combo gives you a coding workhorse that beats Sonnet on several key metrics, plus an Opus-class planning and coding model that actually leads on the hardest engineering benchmark today. You also gain the flexibility to scale your subscriptions upward or tap API usage at dramatically lower rates.
 
 If the context you are working with approaches the 200k limit of M2.7 and GLM-5.1, the router will automatically switch to Deepseek V4 Pro (via Deepseek API) for both sonnet and opus to keep the AI running. As the context seldom exceeds 200k, this feature should not kick in often and you are able to pay minimally as you go with Deepseek instead of relying on another monthly subscription.
 
-## Features of CC-TPR
+### Features of CC-TPR
 
 - Allows you to use Claude Code with multiple token plan providers.
 - Smart Context-aware switching: Automatically route to DeepSeek V4 Pro (1M context) when context approaches 200k tokens
@@ -63,7 +63,7 @@ If the context you are working with approaches the 200k limit of M2.7 and GLM-5.
   - **Openrouter API (for fallback)**
 - Works with all Anthropic-compatible endpoints
 
-## Important – Required Plans & Recommendations
+### Important – Required Plans & Recommendations
 
 To use this router, we recommend using a Minimax Token Plan (for Haiku & Sonnet) and a ZAI GLM Token Plan (for Opus). 
 
@@ -74,19 +74,19 @@ If you do not have them you may sign up via the referral code below, this helps 
 
 For projects that occasionally exceed the 200k token context window, we recommend purchasing credits for DeepSeek V4 Pro (1M context) on a pay-as-you-go basis.
 
-## Requirements
+### Requirements
 
 - Python 3.13+
 - Windows (batch launcher designed for Windows)
 
-## Quick Start
+### Quick Start
 
 1. Double-click ‘start-router.bat’ - this opens a CMD window with the router running
 2. Start Claude Code - it will automatically route through the router
 
 When you are done, close the CMD window or press Ctrl+C to stop the router
 
-## Configuration
+### Configuration
 
 Edit config.yaml to change:
 - Which provider each model routes to
@@ -101,7 +101,7 @@ DEEPSEEK_API_KEY=your_key_here
 OPENROUTER_API_KEY=your_key_here
 ```
 
-## For Development
+### For Development
 
 ```bash
 # Create venv
@@ -120,6 +120,6 @@ pyright
 python -m src.main
 ```
 
-## License
+### License
 
 MIT
