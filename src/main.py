@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import logging
+
 from flask import Flask, Response, jsonify, request
 
 from .quota import get_quota
@@ -9,6 +11,8 @@ from .router import circuit_breaker, config, handle_message, logger
 from .status import tracker
 
 app = Flask(__name__)
+
+logging.getLogger("werkzeug").setLevel(logging.ERROR)
 
 
 @app.route("/v1/messages", methods=["POST"])
@@ -88,12 +92,15 @@ def quota():
 
 def run_server() -> None:
     """Run the Flask server."""
+    import logging
+    log = logging.getLogger("werkzeug")
+    log.setLevel(logging.ERROR)
     host = config["server"].get("host", "127.0.0.1")
     port = config["server"].get("port", 3456)
     log_level = config["server"].get("log_level", "INFO")
     logger.setLevel(log_level)
     logger.info(f"CC-TPR starting on http://{host}:{port}")
-    app.run(host=host, port=port, debug=False)
+    app.run(host=host, port=port, debug=False, threaded=True)
 
 
 if __name__ == "__main__":

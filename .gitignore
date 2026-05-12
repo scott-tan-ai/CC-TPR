@@ -1,6 +1,7 @@
 # Python
 __pycache__/
 *.py[cod]
+*.pyc
 *.pyd
 *.pyo
 .venv/
@@ -9,6 +10,9 @@ venv/
 dist/
 build/
 .eggs/
+
+# Linter
+.ruff_cache/
 
 # Testing
 .pytest_cache/
