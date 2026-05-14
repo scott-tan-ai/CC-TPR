@@ -103,7 +103,7 @@ jobs:
         run: .venv\Scripts\python.exe -m pip install -e ".[dev]"
 
       - name: Build package
-        run: python -m build
+        run: .venv\Scripts\python.exe -m pip install build && .venv\Scripts\python.exe -m build
 
       - name: Publish to PyPI
         env:
