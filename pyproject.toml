@@ -1,6 +1,6 @@
 [project]
 name = "cc-tpr"
-version = "1.0.0"
+version = "1.4.0"
 description = "Claude Code smart router for multi-tokenplan routing"
 readme = "README.md"
 license = {text = "MIT"}
