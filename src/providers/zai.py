@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class ZAIProvider(BaseProvider):
-    """ZAI provider for GLM-4.7 and GLM-5.1 models."""
+    """ZAI provider for GLM-5.1 model."""
 
     def __init__(self, config: dict) -> None:
         """Initialize ZAI provider.
@@ -35,7 +35,7 @@ class ZAIProvider(BaseProvider):
         Returns:
             Model name string.
         """
-        return self.models.get(model_key, "glm-4.7")
+        return self.models.get(model_key, "glm-5.1")
 
     def send(self, request_body: dict, headers: dict) -> requests.Response:
         """Send request to ZAI API.
@@ -51,7 +51,8 @@ class ZAIProvider(BaseProvider):
         glm_model = self._resolve_model(model_key)
         url = f"{self.base_url}/v1/messages"
         body = {**request_body, "model": glm_model}
-        body.pop("_model_key", None)
+        for key in ("_model_key", "metadata", "output_config"):
+            body.pop(key, None)
 
         resp = requests.post(
             url,

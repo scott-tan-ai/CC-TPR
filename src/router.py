@@ -21,6 +21,27 @@ circuit_breaker = CircuitBreaker(
     .get("cooldown_minutes", 2),
 )
 
+_INTERNAL_THRESHOLD = 4000
+
+
+def _model_label(model: str) -> str:
+    """Clean model name for logging, e.g. 'claude-sonnet-4-5' -> 'Claude-Sonnet 4.5'."""
+    model = model.replace("claude-", "").replace("-", " ")
+    parts = model.split()
+    if len(parts) >= 2 and parts[1].isdigit():
+        return f"Claude-{parts[0].title()} {parts[1]}"
+    return f"Claude-{parts[0].title()}"
+
+
+def _provider_label(provider_name: str) -> str:
+    """Capitalize provider name."""
+    return provider_name.title()
+
+
+def _is_internal_request(model_key: str, token_count: int) -> bool:
+    """Return True for internal haiku/sonnet pings under threshold."""
+    return token_count < _INTERNAL_THRESHOLD and model_key in ("haiku", "sonnet")
+
 
 def _get_context_limit(provider_name: str) -> int:
     """Get context limit for a provider.
@@ -49,7 +70,7 @@ def _get_model_display_name(provider_name: str, model_key: str) -> str:
     if provider_name == "minimax":
         return providers.get("minimax", {}).get("model", "MiniMax-M2.7")
     if provider_name == "zai":
-        return providers.get("zai", {}).get("models", {}).get(model_key, "glm-4.7")
+        return providers.get("zai", {}).get("models", {}).get(model_key, "glm-5.1")
     if provider_name == "deepseek":
         return providers.get("deepseek", {}).get("model", "deepseek-v4-pro")
     if provider_name == "openrouter":
@@ -108,7 +129,19 @@ def handle_message(request_body: dict[str, Any], headers: dict[str, str]) -> tup
     token_count = count_messages(request_body.get("messages", []))
 
     provider_name, tc = resolve_provider(model_key, token_count)
-    logger.info(f"Routing {model_key} ({model}) -> {provider_name} [{tc} tokens]")
+
+    if _is_internal_request(model_key, token_count):
+        pass  # Skip logging for internal haiku/sonnet pings under 4000 tokens
+    else:
+        label = _model_label(model)
+        model_disp = _get_model_display_name(provider_name, model_key)
+        provider_disp = _provider_label(provider_name)
+        if provider_name == "minimax" and "minimax" in model_disp.lower():
+            logger.info(f"Routing {label} -> {model_disp} [{tc} tokens]")
+        elif provider_name == "zai" and model_key in ("haiku", "sonnet"):
+            logger.info(f"Routing {label} -> {provider_disp} GLM-5.1 [{tc} tokens]")
+        else:
+            logger.info(f"Routing {label} -> {provider_disp} {model_disp} [{tc} tokens]")
 
     failover_enabled = config.get("failover", {}).get("enabled", False)
 
@@ -118,11 +151,21 @@ def handle_message(request_body: dict[str, Any], headers: dict[str, str]) -> tup
 
     model_display = _get_model_display_name(provider_name, model_key)
     context_limit = _get_context_limit(provider_name)
-    tracker.record(model_key, provider_name, model_display, token_count, context_limit)
+    is_internal = _is_internal_request(model_key, token_count)
+    tracker.record(
+        model,
+        model_key,
+        provider_name,
+        model_display,
+        token_count,
+        context_limit,
+        internal=is_internal,
+    )
 
     try:
         provider = get_provider(provider_name, config.get("providers", {}))
-        resp = provider.send(request_body, headers)
+        body_with_key = {**request_body, "_model_key": model_key}
+        resp = provider.send(body_with_key, headers)
         if failover_enabled:
             circuit_breaker.record_success(provider_name)
         return resp, provider_name
@@ -134,7 +177,8 @@ def handle_message(request_body: dict[str, Any], headers: dict[str, str]) -> tup
         logger.warning(f"{provider_name} failed, trying same model via openrouter: {e}")
         try:
             provider = get_provider("openrouter", config.get("providers", {}))
-            return provider.send(request_body, headers), "openrouter"
+            fallback_body = {**request_body, "_model_key": model_key}
+            return provider.send(fallback_body, headers), "openrouter"
         except Exception as fallback_err:
             logger.error(f"Failover also failed: {fallback_err}")
             raise

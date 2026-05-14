@@ -19,12 +19,11 @@ providers:
     base_url: "https://api.minimax.io/anthropic"
     model: "MiniMax-M2.7"
     timeout: 180
-    context_limit: 200000
+    context_limit: 204800
 
   zai:
     base_url: "https://api.z.ai/api/anthropic"
     models:
-      haiku: "glm-4.7"
       opus: "glm-5.1"
     timeout: 180
     context_limit: 200000

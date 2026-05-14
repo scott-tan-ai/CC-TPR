@@ -1,11 +1,10 @@
-
 # 🔁 CC‑TPR – Claude Code Token Plan Router
 
-## Stop paying a premium for a brand label. Use Claude Code to build or run anything.
+## Stop paying for potential that always runs out of gas. Make your Claude Code work smart and hard.
 
 👉 **This router offers more than 10x the mileage and about 95% of the performance of Claude Pro at only $28 per month.**
 
-This router lets Claude Code use **Minimax M2.7** (beats Sonnet 4.6 on SWE‑bench) and **ZAI GLM-5.1** (ties/beats Opus 4.6 on hardest coding benchmarks) – while automatically routing to **DeepSeek V4 Pro** (1M context) when your conversation approaches 200k tokens.
+This router lets Claude Code use **Minimax M2.7** (beats Sonnet 4.6 on SWE‑bench) and **ZAI GLM-5.1** (ties/beats Opus 4.6 on hardest coding benchmarks) – while automatically routing to **DeepSeek V4 Pro** (1M context) when your context approaches 200k tokens.
 
 ---
 
@@ -16,7 +15,7 @@ This router lets Claude Code use **Minimax M2.7** (beats Sonnet 4.6 on SWE‑ben
 | Claude Pro (Sonnet + Opus) | $20 | Low usage ceiling |
 | MiniMax Starter (M2.7) | $10 | 1,500 requests / 5h |
 | Z.AI Lite (GLM‑5.1) | $18 | ~80 prompts / 5h |
-| **Subtotal (replaces Claude Pro)** | **$28** | That’s **$8 more** than Claude Pro |
+| **Subtotal (replaces Claude Pro)** | **$28** | That's **$8 more** than Claude Pro |
 | DeepSeek V4 Pro (1M context) | **$0/month** + initial $2 min. | Pay as you use – typical <$2/month |
 
 > **Important:** DeepSeek V4 Pro is **not** included in the $28. A **minimum first‑time payment of $2** is required to access the model. After that, you pay only for what you use – **no monthly subscription**. For most users, that $2 lasts for months.
@@ -36,7 +35,7 @@ So your **monthly commitment** is $28 (MiniMax + Z.AI). DeepSeek is a rare, chea
 
 ## 🧠 Why this router exists
 
-Claude Pro charges $20/month for barely enough usage to build anything substancial. 
+Claude Pro charges $20/month for barely enough usage to build anything substancial.
 
 | Model | SWE‑bench Verified | SWE‑bench Pro | API cost (per 1M output) |
 |-------|--------------------|----------------|---------------------------|
@@ -53,8 +52,8 @@ Claude Pro charges $20/month for barely enough usage to build anything substanci
 
 We don't charge for the router. The only way we afford to maintain it is through referral commissions when you sign up for the required plans.
 
-✅ **You pay exactly the same price** – no markup, no fake bonuses.  
-✅ **We get a small commission** that pays for development.  
+✅ **You pay exactly the same price** – no markup, no fake bonuses.
+✅ **We get a small commission** that pays for development.
 ✅ **If everyone signs up directly, this project dies.** If you find value in CC‑TPR, please use the links below.
 
 | Plan | Direct link (supports us) |
@@ -83,7 +82,7 @@ We don't charge for the router. The only way we afford to maintain it is through
 
 ## 🧩 Why GLM‑5.1 over Opus? (Z.AI)
 
-| Metric | GLM‑5.1 | Opus 4.6 | Winner |
+| Metric | GLM-5.1 | Opus 4.6 | Winner |
 |--------|---------|----------|--------|
 | SWE‑bench Pro | **58.4%** (🥇 top spot) | 57.3% | GLM |
 | Terminal‑Bench 2.0 | **69.0** | 65.4 | GLM |
@@ -110,9 +109,9 @@ Conclusion: For 94.6% of coding tasks, GLM‑5.1 is indistinguishable from Opus 
 
 ## 🛠️ Quick start (Windows)
 
-1. **Clone the repo**  
-2. **Double‑click `start-router.bat`** – a CMD window opens with the router running.  
-3. **Start Claude Code** as usual – it will automatically route through the proxy.  
+1. **Clone the repo**
+2. **Double‑click `CC-TPR_Start.bat`** – a CMD window opens with the router running.
+3. **Start Claude Code** as usual – it will automatically route through the proxy.
 4. **Close the CMD window** or press `Ctrl+C` when done.
 
 ---
@@ -146,14 +145,13 @@ MIT – free for any use, including commercial.
 
 ## ❓ FAQ
 
-**Q: Do I really need both plans?**  
+**Q: Do I really need both plans?**
 A: You could use only MiniMax (replaces Sonnet & Haiku) and skip GLM. But GLM is only $18 and gives Opus‑class reasoning – worth it for planning/architecture/review.
 
-**Q: What if I never hit 200k context?**  
+**Q: What if I never hit 200k context?**
 A: Then you never pay DeepSeek beyond the initial $2 deposit. Your monthly stays at $28.
 
-**Q: Why not just use OpenRouter directly?**  
-A: OpenRouter doesn’t give you token‑plan pricing. Our router uses **monthly subscription plans** (MiniMax, Z.AI) which are ~10x cheaper than pay‑as‑you‑go API.
+**Q: Why not just use OpenRouter directly?**
+A: OpenRouter doesn't give you token‑plan pricing. Our router uses **monthly subscription plans** (MiniMax, Z.AI) which are ~10x cheaper than pay‑as‑you‑go API.
 
 ---
-

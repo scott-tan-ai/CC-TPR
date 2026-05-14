@@ -1,0 +1,97 @@
+@echo off
+setlocal enabledelayedexpansion
+
+title CC-TPR Router
+cd /d "%~dp0"
+
+echo ========================================
+echo   CC-TPR Router - Startup
+echo ========================================
+echo.
+
+echo [1/4] Checking Python installation...
+python --version >nul 2>&1
+if errorlevel 1 (
+    set PYVER=NOT FOUND
+    goto :prompt_download
+)
+
+for /f "tokens=2" %%v in ('python --version 2^>^&1') do set PYVER=%%v
+for /f "tokens=1,2 delims=." %%a in ("!PYVER!") do (
+    if %%a LSS 3 goto :prompt_download
+    if %%a EQU 3 if %%b LSS 12 goto :prompt_download
+)
+echo       Python !PYVER! - OK
+echo.
+goto :check_venv
+
+:prompt_download
+echo.
+echo ###############################################################################
+echo.
+echo   Python 3.12+ not found. Current: !PYVER!
+echo.
+echo   Download and install Python 3.12 LTS now?
+echo.
+echo   [Y] Yes, download Python 3.12
+echo   [N] No, exit
+echo.
+echo ###############################################################################
+choice /c YN /n
+if errorlevel 2 exit /b
+
+echo.
+echo Downloading Python 3.12.4 LTS...
+curl -L -o "%USERPROFILE%\Downloads\python-3.12.4-amd64.exe" https://www.python.org/ftp/python/3.12.4/python-3.12.4-amd64.exe
+
+echo.
+echo Opening Downloads folder...
+start explorer.exe "%USERPROFILE%\Downloads"
+
+echo.
+echo Launching Python installer...
+start "" "%USERPROFILE%\Downloads\python-3.12.4-amd64.exe"
+
+echo.
+echo ###############################################################################
+echo   Python 3.12 is being downloaded.
+echo   Please install Python 3.12 or above and
+echo   relaunch CC-TPR_Start.bat to start CC-TPR.
+echo   Press any key to exit...
+echo ###############################################################################
+pause >nul
+exit /b
+
+:check_venv
+echo [2/4] Checking virtual environment...
+if not exist ".venv" (
+    echo       .venv not found - creating...
+    python -m venv .venv
+    echo       Installing dependencies...
+    .venv\Scripts\python.exe -m pip install -q -e ".[dev]"
+    echo       .venv created - OK
+) else (
+    echo       .venv found - OK
+)
+echo.
+
+echo [3/4] Checking config...
+if not exist "config.yaml" (
+    echo       WARNING: config.yaml not found!
+) else (
+    echo       config.yaml found - OK
+)
+if not exist ".env" (
+    echo       WARNING: .env not found - API keys may be missing
+) else (
+    echo       .env found - OK
+)
+echo.
+
+echo [4/4] Starting CC-TPR Router...
+echo       Listening on http://127.0.0.1:3456
+echo       Press Ctrl+C to stop
+echo.
+echo ========================================
+echo.
+.venv\Scripts\python.exe -m src.main

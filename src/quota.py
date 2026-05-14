@@ -146,7 +146,7 @@ def get_zai_quota() -> dict[str, Any] | None:
             weekly_reset_ms = limit.get("nextResetTime")
 
     if hr5_pct is None:
-        return None
+        hr5_pct = 0
 
     now_ms = int(time.time() * 1000)
 
@@ -157,9 +157,9 @@ def get_zai_quota() -> dict[str, Any] | None:
 
     result = {
         "5hr_pct": hr5_pct,
-        "5hr_reset_ms": hr5_reset_ms,
-        "weekly_pct": weekly_pct,
-        "weekly_reset_ms": weekly_reset_ms,
+        "5hr_reset_ms": hr5_reset_ms if hr5_reset_ms is not None else 0,
+        "weekly_pct": weekly_pct if weekly_pct is not None else 0,
+        "weekly_reset_ms": weekly_reset_ms if weekly_reset_ms is not None else 0,
     }
 
     with _cache_lock:

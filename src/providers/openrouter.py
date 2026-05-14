@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 FALLBACK_MODELS: dict[str, str] = {
-    "haiku": "z-ai/glm-4.7",
+    "haiku": "z-ai/glm-5.1",
     "sonnet": "minimax/minimax-m2.7",
     "opus": "z-ai/glm-5.1",
 }
@@ -58,7 +58,8 @@ class OpenRouterProvider(BaseProvider):
         model = self._resolve_model(model_key)
         url = f"{self.base_url}/v1/messages"
         body = {**request_body, "model": model}
-        body.pop("_model_key", None)
+        for key in ("_model_key", "metadata", "output_config"):
+            body.pop(key, None)
 
         resp = requests.post(
             url,
@@ -87,13 +88,14 @@ class OpenRouterProvider(BaseProvider):
         model = self._resolve_model(model_key)
         url = f"{self.base_url}/v1/messages"
         body = {**request_body, "model": model, "stream": False}
-        body.pop("_model_key", None)
+        for key in ("_model_key", "metadata", "output_config"):
+            body.pop(key, None)
 
         resp = requests.post(
             url,
             headers={
                 "Content-Type": "application/json",
-                "x-api_key": self.api_key,
+                "x-api-key": self.api_key,
                 "anthropic-version": "2023-06-01",
             },
             json=body,

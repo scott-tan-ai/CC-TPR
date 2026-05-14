@@ -38,6 +38,8 @@ class MiniMaxProvider(BaseProvider):
         """
         url = f"{self.base_url}/v1/messages"
         body = {**request_body, "model": self.model}
+        for key in ("_model_key", "metadata", "output_config"):
+            body.pop(key, None)
 
         resp = requests.post(
             url,

@@ -93,6 +93,7 @@ def quota():
 def run_server() -> None:
     """Run the Flask server."""
     import logging
+
     log = logging.getLogger("werkzeug")
     log.setLevel(logging.ERROR)
     host = config["server"].get("host", "127.0.0.1")
