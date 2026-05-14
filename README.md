@@ -1,8 +1,8 @@
-# 🔁 CC‑TPR – Claude Code Token Plan Router
+# 🔁 Claude Code - Token Plan Router
 
-## Make Claude Code work 10x more, Nonstop, Same intelligence.
+## Make Claude Code Work 10x More, Nonstop, Same Intelligence.
 
-👉 **This router offers more than 10x the mileage and about 95% of the performance of Claude Pro at only $28 per month.**
+👉 **This router offers more than 10x the mileage and about 95%+ of the performance of Claude Pro at only $28 per month.**
 
 This router lets Claude Code use **Minimax M2.7** (beats Sonnet 4.6 on SWE‑bench) and **ZAI GLM-5.1** (ties/beats Opus 4.6 on hardest coding benchmarks) – while automatically routing to **DeepSeek V4 Pro** (1M context) when your context approaches 200k tokens.
 
@@ -15,7 +15,7 @@ This router lets Claude Code use **Minimax M2.7** (beats Sonnet 4.6 on SWE‑ben
 | Claude Pro (Sonnet + Opus) | $20 | Low usage ceiling |
 | MiniMax Starter (M2.7) | $10 | 1,500 requests / 5h |
 | Z.AI Lite (GLM‑5.1) | $18 | ~80 prompts / 5h |
-| **Subtotal (replaces Claude Pro)** | **$28** | Costs $8 more, does 10x more work than Claude Pro |
+| **Subtotal (replaces Claude Pro)** | **$28** | Does 10x more work and cost $8 more than Claude Pro |
 | DeepSeek V4 Pro (1M context) | **$0/month** + initial $2 min. | Pay as you use – typical <$2/month |
 
 > **Important:** DeepSeek V4 Pro is **not** included in the $28. A **minimum first‑time payment of $2** is required to access the model. After that, you pay only for what you use – **no monthly subscription**. For most users, that $2 lasts for months.
@@ -131,6 +131,50 @@ Conclusion: For 94.6% of coding tasks, GLM‑5.1 is indistinguishable from Opus 
 5. **Stop the router**: press `Ctrl+C` or run `./stop-router_Mac.sh` from another terminal.
 
 > **Note:** Closing the terminal window on macOS stops the router automatically. No lingering processes.
+
+---
+
+## 🖥️ Manual Status Line (Zed, VS Code, IDE with terminal or powershell)
+
+![CC‑TPR status line showing routed model and context window](./docs/statusline3.png)
+
+For editors without `statusLine.command` support (Zed, VS Code), CC-TPR provides a standalone Python script that displays real-time routing status inline.
+
+### Running from Zed
+
+1. **Open Zed** to your CC-TPR project
+2. **Toggle the terminal**: press `` Ctrl+` `` (or `Cmd+`` on Mac)
+3. **Run the status line**:
+
+   **Windows:**
+   ```powershell
+   python statusline\manual_statusline_start.py
+   ```
+
+   **macOS/Linux:**
+   ```bash
+   python3 statusline/manual_statusline_start.py
+   ```
+
+### Output format
+
+```
+myproject | MiniMax-M2.7 | [####....] 45% 210k | [##......] 3% 2h32m | [##......] 2% 5d05h
+           model             context bar         5hr quota         weekly quota
+```
+
+### Color coding
+
+| Usage | Color |
+|-------|-------|
+| < 70% | Green |
+| 70-79% | Orange |
+| ≥ 80% | Red |
+| Waiting | DIM |
+
+### Stopping
+
+Press `Ctrl+C` in the terminal running the script.
 
 ---
 
