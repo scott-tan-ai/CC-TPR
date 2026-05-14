@@ -134,7 +134,7 @@ Conclusion: For 94.6% of coding tasks, GLM‑5.1 is indistinguishable from Opus 
 
 ---
 
-## 🖥️ Manual Status Line (Zed, VS Code, IDE with terminal or powershell)
+## 🖥️ Manual Status Line (Zed, Terminal, cmd, PowerShell)
 
 ![CC‑TPR status line showing routed model and context window](./docs/statusline3.png)
 
