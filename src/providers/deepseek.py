@@ -23,7 +23,7 @@ class DeepSeekProvider(BaseProvider):
             config: Provider configuration with base_url, model, timeout.
         """
         super().__init__(config)
-        self.api_key: str | None = os.getenv("DEEPSEEK_API_KEY")
+        self.api_key: str = os.getenv("DEEPSEEK_API_KEY") or ""
         self.model: str = config.get("model", "deepseek-v4-pro")
 
     def send(self, request_body: dict, headers: dict) -> requests.Response:
@@ -45,7 +45,7 @@ class DeepSeekProvider(BaseProvider):
             url,
             headers={
                 "Content-Type": "application/json",
-                "x-api-key": self.api_key,
+                "x-api-key": self.api_key or "",
                 "anthropic-version": "2023-06-01",
             },
             json=body,
@@ -73,7 +73,7 @@ class DeepSeekProvider(BaseProvider):
             url,
             headers={
                 "Content-Type": "application/json",
-                "x-api-key": self.api_key,
+                "x-api-key": self.api_key or "",
                 "anthropic-version": "2023-06-01",
             },
             json=body,

@@ -23,7 +23,7 @@ class ZAIProvider(BaseProvider):
             config: Provider configuration with base_url, models dict, timeout.
         """
         super().__init__(config)
-        self.api_key: str | None = os.getenv("ZAI_API_KEY")
+        self.api_key: str = os.getenv("ZAI_API_KEY") or ""
         self.models: dict = config.get("models", {})
 
     def _resolve_model(self, model_key: str) -> str:
@@ -58,7 +58,7 @@ class ZAIProvider(BaseProvider):
             url,
             headers={
                 "Content-Type": "application/json",
-                "x-api-key": self.api_key,
+                "x-api-key": self.api_key or "",
                 "anthropic-version": "2023-06-01",
             },
             json=body,

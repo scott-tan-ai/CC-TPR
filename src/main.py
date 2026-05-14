@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 from flask import Flask, Response, jsonify, request
 
@@ -31,7 +32,7 @@ def messages() -> tuple:
     return _respond_passthrough(upstream, is_stream)
 
 
-def _respond_passthrough(upstream, is_stream: bool):
+def _respond_passthrough(upstream, is_stream: bool) -> Any:
     """Respond by passing through upstream response.
 
     Args:

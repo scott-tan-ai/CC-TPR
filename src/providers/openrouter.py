@@ -30,7 +30,7 @@ class OpenRouterProvider(BaseProvider):
             config: Provider configuration with base_url, model, timeout.
         """
         super().__init__(config)
-        self.api_key: str | None = os.getenv("OPENROUTER_API_KEY")
+        self.api_key: str = os.getenv("OPENROUTER_API_KEY") or ""
         self.default_model: str = config.get("model", "deepseek/deepseek-chat")
 
     def _resolve_model(self, model_key: str) -> str:
@@ -65,7 +65,7 @@ class OpenRouterProvider(BaseProvider):
             url,
             headers={
                 "Content-Type": "application/json",
-                "x-api-key": self.api_key,
+                "x-api-key": self.api_key or "",
                 "anthropic-version": "2023-06-01",
             },
             json=body,
@@ -95,7 +95,7 @@ class OpenRouterProvider(BaseProvider):
             url,
             headers={
                 "Content-Type": "application/json",
-                "x-api-key": self.api_key,
+                "x-api-key": self.api_key or "",
                 "anthropic-version": "2023-06-01",
             },
             json=body,
