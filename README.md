@@ -1,7 +1,7 @@
 
 # 🔁 CC‑TPR – Claude Code Token Plan Router
 
-## Stop paying a premium for a brand label.
+## Stop paying a premium for a brand label. Use Claude Code to build or run anything.
 
 👉 **This router offers more than 10x the mileage and about 95% of the performance of Claude Pro at only $28 per month.**
 
