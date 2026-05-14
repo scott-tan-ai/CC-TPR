@@ -111,7 +111,7 @@ jobs:
           PYPI_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
           .venv\Scripts\python.exe -m pip install twine
-          twine upload dist/* --username ${{ env.PYPI_USERNAME }} --password ${{ env.PYPI_PASSWORD }}
+          .venv\Scripts\python.exe -m twine upload dist/* --username __token__ --password ${{ secrets.PYPI_TOKEN }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
