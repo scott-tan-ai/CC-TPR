@@ -15,7 +15,7 @@ This router lets Claude Code use **Minimax M2.7** (beats Sonnet 4.6 on SWE‑ben
 | Claude Pro (Sonnet + Opus) | $20 | Low usage ceiling |
 | MiniMax Starter (M2.7) | $10 | 1,500 requests / 5h |
 | Z.AI Lite (GLM‑5.1) | $18 | ~80 prompts / 5h |
-| **Subtotal (replaces Claude Pro)** | **$28** | That's **$8 more** than Claude Pro |
+| **Subtotal (replaces Claude Pro)** | **$28** | Costs $8 more, return 10x more usage than Claude Pro |
 | DeepSeek V4 Pro (1M context) | **$0/month** + initial $2 min. | Pay as you use – typical <$2/month |
 
 > **Important:** DeepSeek V4 Pro is **not** included in the $28. A **minimum first‑time payment of $2** is required to access the model. After that, you pay only for what you use – **no monthly subscription**. For most users, that $2 lasts for months.
