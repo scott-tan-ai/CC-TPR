@@ -3,7 +3,6 @@ name: CI
 on:
   push:
     branches: [main]
-    tags: [v*]
   pull_request:
     branches: [main]
 
@@ -83,39 +82,4 @@ jobs:
       - name: Run ruff format check
         run: .venv\Scripts\python.exe -m ruff format --check src tests
 
-  build:
-    runs-on: windows-latest
-    needs: [test, typecheck, lint]
-    if: startsWith(github.ref, 'refs/tags/v')
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Python 3.13
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.13"
-
-      - name: Create virtual environment
-        run: python -m venv .venv
-
-      - name: Install dependencies
-        run: .venv\Scripts\python.exe -m pip install -e ".[dev]"
-
-      - name: Build package
-        run: .venv\Scripts\python.exe -m pip install build && .venv\Scripts\python.exe -m build
-
-      - name: Publish to PyPI
-        env:
-          PYPI_USERNAME: __token__
-          PYPI_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: |
-          .venv\Scripts\python.exe -m pip install twine
-          .venv\Scripts\python.exe -m twine upload dist/* --username __token__ --password ${{ secrets.PYPI_TOKEN }}
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dist/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
