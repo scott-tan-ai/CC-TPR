@@ -9,7 +9,7 @@ echo   CC-TPR Router - Startup
 echo ========================================
 echo.
 
-echo [1/4] Checking Python installation...
+echo [1/5] Checking Python installation...
 python --version >nul 2>&1
 if errorlevel 1 (
     set PYVER=NOT FOUND
@@ -56,14 +56,14 @@ echo.
 echo ###############################################################################
 echo   Python 3.12 is being downloaded.
 echo   Please install Python 3.12 or above and
-echo   relaunch CC-TPR_Start.bat to start CC-TPR.
+echo   relaunch CC-TPR_Win_Start.bat to start CC-TPR.
 echo   Press any key to exit...
 echo ###############################################################################
 pause >nul
 exit /b
 
 :check_venv
-echo [2/4] Checking virtual environment...
+echo [2/5] Checking virtual environment...
 if not exist ".venv" (
     echo       .venv not found - creating...
     python -m venv .venv
@@ -75,7 +75,7 @@ if not exist ".venv" (
 )
 echo.
 
-echo [3/4] Checking config...
+echo [3/5] Checking config...
 if not exist "config.yaml" (
     echo       WARNING: config.yaml not found!
 ) else (
@@ -88,7 +88,46 @@ if not exist ".env" (
 )
 echo.
 
-echo [4/4] Starting CC-TPR Router...
+echo [4/5] Setting up statusline...
+set "CLAUDE_DIR=%USERPROFILE%\.claude"
+if not exist "%CLAUDE_DIR%" mkdir "%CLAUDE_DIR%"
+
+if not exist "%CLAUDE_DIR%\smart-router-status.py" (
+    copy /Y "statusline\smart-router-status.py" "%CLAUDE_DIR%\smart-router-status.py" >nul
+    echo       Copied smart-router-status.py to %CLAUDE_DIR%
+) else (
+    echo       smart-router-status.py already installed - OK
+)
+
+set "SETTINGS=%CLAUDE_DIR%\settings.json"
+set "NEED_REGISTER=0"
+if exist "%SETTINGS%" (
+    findstr /C:"statusLine" "%SETTINGS%" >nul 2>&1
+    if errorlevel 1 set "NEED_REGISTER=1"
+) else (
+    set "NEED_REGISTER=1"
+)
+
+if "!NEED_REGISTER!"=="1" (
+    echo.
+    echo       Statusline not registered in Claude Code.
+    echo       Register now? [Y/n]
+    choice /c YN /n /t 10 /d Y
+    if not errorlevel 2 (
+        if exist "%SETTINGS%" (
+            copy /Y "%SETTINGS%" "%SETTINGS%.bak" >nul
+            .venv\Scripts\python.exe -c "import json,sys;s=json.load(open(sys.argv[1]));s.setdefault('statusLine',{}).update({'command':'python \"%CLAUDE_DIR%\\smart-router-status.py\"'});json.dump(s,open(sys.argv[1],'w'),indent=2)" "%SETTINGS%"
+        ) else (
+            echo {"statusLine": {"command": "python \"%CLAUDE_DIR%\\smart-router-status.py\""}} > "%SETTINGS%"
+        )
+        echo       Registered! Restart Claude Code to activate statusline.
+    ) else (
+        echo       Skipped. You can register manually later.
+    )
+)
+echo.
+
+echo [5/5] Starting CC-TPR Router...
 echo       Listening on http://127.0.0.1:3456
 echo       Press Ctrl+C to stop
 echo.

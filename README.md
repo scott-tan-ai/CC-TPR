@@ -107,12 +107,30 @@ Conclusion: For 94.6% of coding tasks, GLM‑5.1 is indistinguishable from Opus 
 
 ---
 
-## 🛠️ Quick start (Windows)
+## 🛠️ Quick start
+
+### Windows
 
 1. **Clone the repo**
-2. **Double‑click `CC-TPR_Start.bat`** – a CMD window opens with the router running.
+2. **Double‑click `CC-TPR_Win_Start.bat`** – a CMD window opens with the router running.
 3. **Start Claude Code** as usual – it will automatically route through the proxy.
-4. **Close the CMD window** or press `Ctrl+C` when done.
+4. **Close the CMD window** or press `Ctrl+C` when done. Or run `stop-router_Win.bat`.
+
+### macOS / Linux
+
+1. **Clone the repo**
+2. **Make scripts executable** (first time only):
+   ```bash
+   chmod +x CC-TPR_Mac_Start.sh stop-router_Mac.sh
+   ```
+3. **Run the launcher**:
+   ```bash
+   ./CC-TPR_Mac_Start.sh
+   ```
+4. **Start Claude Code** as usual – it will automatically route through the proxy.
+5. **Stop the router**: press `Ctrl+C` or run `./stop-router_Mac.sh` from another terminal.
+
+> **Note:** Closing the terminal window on macOS stops the router automatically. No lingering processes.
 
 ---
 
@@ -127,12 +145,22 @@ Conclusion: For 94.6% of coding tasks, GLM‑5.1 is indistinguishable from Opus 
 
 ## 🧪 Development
 
+### Windows
 ```bash
 python -m venv .venv
 .venv\Scripts\python.exe -m pip install -e ".[dev]"
 pytest
 pyright
 python -m src.main
+```
+
+### macOS / Linux
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -e ".[dev]"
+pytest
+pyright
+.venv/bin/python -m src.main
 ```
 
 ---
