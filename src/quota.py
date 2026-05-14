@@ -17,8 +17,8 @@ _MINIMAX_CACHE: dict[str, Any] = {"data": None, "expires": 0.0}
 _ZAI_CACHE: dict[str, Any] = {"data": None, "expires": 0.0}
 _cache_lock = threading.Lock()
 
-MINIMAX_CACHE_TTL = 30
-ZAI_CACHE_TTL = 60
+MINIMAX_CACHE_TTL = 90
+ZAI_CACHE_TTL = 90
 
 
 def _fetch_minimax_raw() -> dict[str, Any] | None:

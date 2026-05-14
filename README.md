@@ -1,6 +1,6 @@
 # 🔁 CC‑TPR – Claude Code Token Plan Router
 
-## Stop paying for potential that always runs out of gas. Make your Claude Code work smart and hard.
+## Make your Claude Code work 10x harder. Nonstop. Same intelligence.
 
 👉 **This router offers more than 10x the mileage and about 95% of the performance of Claude Pro at only $28 per month.**
 
