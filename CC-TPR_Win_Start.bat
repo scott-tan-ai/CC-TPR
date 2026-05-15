@@ -9,7 +9,7 @@ echo   CC-TPR Router - Startup
 echo ========================================
 echo.
 
-echo [1/5] Checking Python installation...
+echo [1/6] Checking Python installation...
 python --version >nul 2>&1
 if errorlevel 1 (
     set PYVER=NOT FOUND
@@ -63,7 +63,7 @@ pause >nul
 exit /b
 
 :check_venv
-echo [2/5] Checking virtual environment...
+echo [2/6] Checking virtual environment...
 if not exist ".venv" (
     echo       .venv not found - creating...
     python -m venv .venv
@@ -75,7 +75,7 @@ if not exist ".venv" (
 )
 echo.
 
-echo [3/5] Checking config...
+echo [3/6] Checking config...
 if not exist "config.yaml" (
     echo       WARNING: config.yaml not found!
 ) else (
@@ -88,7 +88,7 @@ if not exist ".env" (
 )
 echo.
 
-echo [4/5] Setting up statusline...
+echo [4/6] Setting up statusline...
 set "CLAUDE_DIR=%USERPROFILE%\.claude"
 if not exist "%CLAUDE_DIR%" mkdir "%CLAUDE_DIR%"
 
@@ -127,7 +127,11 @@ if "!NEED_REGISTER!"=="1" (
 )
 echo.
 
-echo [5/5] Starting CC-TPR Router...
+echo [5/6] Checking MiniMax MCP...
+.venv\Scripts\python.exe -m src.utils.mcp_check
+echo.
+
+echo [6/6] Starting CC-TPR Router...
 echo       Listening on http://127.0.0.1:3456
 echo       Press Ctrl+C to stop
 echo.
