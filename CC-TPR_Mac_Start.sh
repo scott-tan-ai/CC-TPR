@@ -12,7 +12,7 @@ echo "========================================"
 echo ""
 
 # --- Step 1: Check Python ---
-echo "[1/5] Checking Python installation..."
+echo "[1/6] Checking Python installation..."
 if ! command -v python3 &> /dev/null; then
     echo ""
     echo "  Python 3 not found."
@@ -33,7 +33,7 @@ echo "      Python $PYVER - OK"
 echo ""
 
 # --- Step 2: Check venv ---
-echo "[2/5] Checking virtual environment..."
+echo "[2/6] Checking virtual environment..."
 if [ ! -d ".venv" ]; then
     echo "      .venv not found - creating..."
     python3 -m venv .venv
@@ -46,7 +46,7 @@ fi
 echo ""
 
 # --- Step 3: Check config ---
-echo "[3/5] Checking config..."
+echo "[3/6] Checking config..."
 if [ ! -f "config.yaml" ]; then
     echo "      WARNING: config.yaml not found!"
 else
@@ -60,7 +60,7 @@ fi
 echo ""
 
 # --- Step 4: Setup statusline ---
-echo "[4/5] Setting up statusline..."
+echo "[4/6] Setting up statusline..."
 mkdir -p "$CLAUDE_DIR"
 
 if [ ! -f "$CLAUDE_DIR/smart-router-status.py" ]; then
@@ -106,8 +106,12 @@ json.dump(s, open(sys.argv[1], 'w'), indent=2)
 fi
 echo ""
 
-# --- Step 5: Start router ---
-echo "[5/5] Starting CC-TPR Router..."
+echo "[5/6] Checking MiniMax MCP..."
+.venv/bin/python -m src.utils.mcp_check
+echo ""
+
+# --- Step 6: Start router ---
+echo "[6/6] Starting CC-TPR Router..."
 echo "      Listening on http://127.0.0.1:3456"
 echo "      Press Ctrl+C to stop"
 echo ""

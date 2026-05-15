@@ -14,9 +14,9 @@ Requires:
 
 Exit: Ctrl+C
 """
+import json
 import os
 import sys
-import json
 import time
 import urllib.request
 

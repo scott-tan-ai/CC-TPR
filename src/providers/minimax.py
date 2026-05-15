@@ -26,6 +26,30 @@ class MiniMaxProvider(BaseProvider):
         self.api_key: str = os.getenv("MINIMAX_API_KEY") or ""
         self.model: str = config.get("model", "MiniMax-M2.7")
 
+    @staticmethod
+    def _strip_images(request_body: dict) -> dict:
+        """Remove image content blocks from messages.
+
+        MiniMax's Anthropic-compatible API does not support image blocks.
+        Image analysis is handled by MiniMax MCP (understand_image tool).
+
+        Args:
+            request_body: Original request body.
+
+        Returns:
+            New dict with image blocks removed.
+        """
+        messages = request_body.get("messages", [])
+        cleaned = []
+        for msg in messages:
+            content = msg.get("content", "")
+            if isinstance(content, list):
+                new_blocks = [b for b in content if b.get("type") != "image"]
+                cleaned.append({**msg, "content": new_blocks})
+            else:
+                cleaned.append(msg)
+        return {**request_body, "messages": cleaned}
+
     def send(self, request_body: dict, headers: dict) -> requests.Response:
         """Send request to MiniMax API.
 
@@ -37,7 +61,8 @@ class MiniMaxProvider(BaseProvider):
             Response from MiniMax API.
         """
         url = f"{self.base_url}/v1/messages"
-        body = {**request_body, "model": self.model}
+        body = self._strip_images(request_body)
+        body = {**body, "model": self.model}
         for key in ("_model_key", "metadata", "output_config"):
             body.pop(key, None)
 

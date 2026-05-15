@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-import sys
 import json
 import os
+import sys
 import urllib.request
 
 ROUTER_URL = "http://127.0.0.1:3456"
