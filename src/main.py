@@ -13,7 +13,15 @@ from .status import tracker
 
 app = Flask(__name__)
 
+app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024
 logging.getLogger("werkzeug").setLevel(logging.ERROR)
+
+
+@app.before_request
+def _check_content_length():
+    if request.content_length and request.content_length > 20 * 1024 * 1024:
+        from flask import abort
+        abort(413)
 
 
 @app.route("/v1/messages", methods=["POST"])

@@ -18,30 +18,31 @@ providers:
   minimax:
     base_url: "https://api.minimax.io/anthropic"
     model: "MiniMax-M2.7"
-    timeout: 180
+    timeout: 1800
     context_limit: 204800
 
   zai:
     base_url: "https://api.z.ai/api/anthropic"
     models:
       opus: "glm-5.1"
-    timeout: 180
+    timeout: 1800
     context_limit: 200000
 
   deepseek:
     base_url: "https://api.deepseek.com/anthropic"
     model: "deepseek-v4-pro"
-    timeout: 180
+    timeout: 1800
     context_limit: 1000000
 
   openrouter:
     base_url: "https://openrouter.ai/api"
-    timeout: 180
+    timeout: 1800
     context_limit: 200000
 
 failover:
   enabled: true
   fallback_provider: "openrouter"
+  429_cooldown_seconds: 60
   circuit_breaker:
     failure_threshold: 3
     cooldown_minutes: 2

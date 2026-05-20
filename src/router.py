@@ -149,6 +149,10 @@ def handle_message(request_body: dict[str, Any], headers: dict[str, str]) -> tup
         logger.warning(f"{provider_name} circuit open, failing over to openrouter")
         provider_name = "openrouter"
 
+    if circuit_breaker.is_in_429_cooldown(provider_name):
+        logger.warning(f"{provider_name} in 429 cooldown, failing over to openrouter")
+        provider_name = "openrouter"
+
     model_display = _get_model_display_name(provider_name, model_key)
     context_limit = _get_context_limit(provider_name)
     is_internal = _is_internal_request(model_key, token_count)
@@ -168,17 +172,26 @@ def handle_message(request_body: dict[str, Any], headers: dict[str, str]) -> tup
         resp = provider.send(body_with_key, headers)
         if failover_enabled:
             circuit_breaker.record_success(provider_name)
+            circuit_breaker.clear_429_cooldown(provider_name)
         return resp, provider_name
     except Exception as e:
         if not failover_enabled:
             raise
 
-        circuit_breaker.record_failure(provider_name)
+        is_429 = getattr(e, "response", None) is not None and e.response.status_code == 429
+        if is_429:
+            circuit_breaker.record_429(provider_name)
+        else:
+            circuit_breaker.record_failure(provider_name)
+
         logger.warning(f"{provider_name} failed, trying same model via openrouter: {e}")
         try:
             provider = get_provider("openrouter", config.get("providers", {}))
             fallback_body = {**request_body, "_model_key": model_key}
             return provider.send(fallback_body, headers), "openrouter"
         except Exception as fallback_err:
+            is_429_fallback = getattr(fallback_err, "response", None) is not None and fallback_err.response.status_code == 429
+            if is_429_fallback:
+                circuit_breaker.record_429("openrouter")
             logger.error(f"Failover also failed: {fallback_err}")
             raise

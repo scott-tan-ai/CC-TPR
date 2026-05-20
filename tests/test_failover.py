@@ -54,3 +54,41 @@ class TestCircuitBreaker:
         status = cb.status()
         assert status["testprovider"]["open"] is True
         assert status["testprovider"]["failures"] == 2
+
+
+class Test429Cooldown:
+    """Tests for 429 rate-limit cooldown."""
+
+    def test_initial_no_429_cooldown(self):
+        """New provider should not be in 429 cooldown."""
+        cb = CircuitBreaker(threshold=3, cooldown_minutes=2)
+        assert cb.is_in_429_cooldown("zai") is False
+
+    def test_record_429_sets_cooldown(self):
+        """Recording a 429 should set cooldown."""
+        cb = CircuitBreaker(threshold=3, cooldown_minutes=2)
+        cb.record_429("zai")
+        assert cb.is_in_429_cooldown("zai") is True
+
+    def test_clear_429_removes_cooldown(self):
+        """Clearing 429 cooldown should remove it."""
+        cb = CircuitBreaker(threshold=3, cooldown_minutes=2)
+        cb.record_429("zai")
+        cb.clear_429_cooldown("zai")
+        assert cb.is_in_429_cooldown("zai") is False
+
+    def test_different_providers_independent(self):
+        """429 cooldown should be independent per provider."""
+        cb = CircuitBreaker(threshold=3, cooldown_minutes=2)
+        cb.record_429("zai")
+        assert cb.is_in_429_cooldown("zai") is True
+        assert cb.is_in_429_cooldown("openrouter") is False
+
+    def test_cooldown_expires_after_seconds(self, monkeypatch):
+        """Cooldown should expire after configured seconds."""
+        cb = CircuitBreaker(threshold=3, cooldown_minutes=2)
+        from datetime import datetime, timedelta
+        past_time = datetime(2026, 5, 20, 12, 0, 0) - timedelta(seconds=61)
+        cb._last_429["zai"] = past_time
+
+        assert cb.is_in_429_cooldown("zai") is False

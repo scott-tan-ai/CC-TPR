@@ -4,9 +4,13 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 
+from .utils.config import load_config
 from .utils.logger import setup_logger
 
 logger = setup_logger()
+config = load_config()
+
+circuit_breaker_cooldown_seconds: int = config.get("failover", {}).get("429_cooldown_seconds", 60)
 
 
 class CircuitBreaker:
@@ -76,6 +80,25 @@ class CircuitBreaker:
         """
         self.failures.pop(provider, None)
         self.last_failure.pop(provider, None)
+
+    # 429 rate-limit tracking (independent of circuit breaker)
+    _last_429: dict[str, datetime] = {}
+
+    def is_in_429_cooldown(self, provider: str) -> bool:
+        if provider not in self._last_429:
+            return False
+        elapsed = datetime.now() - self._last_429[provider]
+        if elapsed.total_seconds() >= circuit_breaker_cooldown_seconds:
+            self._last_429.pop(provider, None)
+            return False
+        return True
+
+    def record_429(self, provider: str) -> None:
+        self._last_429[provider] = datetime.now()
+        logger.warning(f"429 cooldown recorded for {provider}, skipping for {circuit_breaker_cooldown_seconds}s")
+
+    def clear_429_cooldown(self, provider: str) -> None:
+        self._last_429.pop(provider, None)
 
     def status(self) -> dict:
         """Get circuit breaker status for all providers.
